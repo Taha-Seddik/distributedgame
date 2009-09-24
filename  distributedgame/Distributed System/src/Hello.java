@@ -11,4 +11,6 @@ public interface Hello extends Remote {
 	
 	// void move(int id, int direction) throws RemoteException; 
 	
+	String up() throws RemoteException;
+	
 }
