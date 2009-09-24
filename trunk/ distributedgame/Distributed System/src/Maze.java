@@ -4,5 +4,8 @@
  * Every location with or without treasures is marked as n (0<=n<=M)
  */
 public class Maze {
+	
+	public static final int N = 100;
+	
 
 }

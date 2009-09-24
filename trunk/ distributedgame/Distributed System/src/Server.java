@@ -5,31 +5,10 @@ import java.rmi.server.UnicastRemoteObject;
 
 public class Server implements Hello {
 
-	int testInt;
-
-	public Server() {
-		testInt = 0;
+	public String up() {
+		return "up";
 	}
-
-	public String sayHello() {
-		return "Hello, world!";
-	}
-
-	public int throwInt() {
-		doSomthing();
-		return testInt;
-	}
-
-	private void doSomthing() {
-		testInt = +10;
-	}
-
-	public void joinGame() {
-	};
-
-	public void move(int id, int direction) {
-	};
-
+	
 	public static void main(String args[]) {
 		Hello stub = null;
 		Registry registry = null;
