@@ -8,7 +8,19 @@ public class Server implements Hello {
 	public String up() {
 		return "up";
 	}
-	
+
+	public String down() {
+		return "down";
+	}
+
+	public String left() {
+		return "left";
+	}
+
+	public String right() {
+		return "right";
+	}
+
 	public static void main(String args[]) {
 		Hello stub = null;
 		Registry registry = null;
