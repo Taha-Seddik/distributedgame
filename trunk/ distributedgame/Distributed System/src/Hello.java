@@ -13,4 +13,12 @@ public interface Hello extends Remote {
 	
 	String up() throws RemoteException;
 	
+	String down() throws RemoteException;
+	
+	String left() throws RemoteException;
+	
+	String right() throws RemoteException;
+	
+	
+	
 }
