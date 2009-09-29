@@ -24,7 +24,7 @@ public class Client {
 
 			while ((userEntry = getChar()) != 'Q') {
 				if (userEntry == 'w') {
-					System.out.println(stub.up());
+					//System.out.println(stub.up());
 				}
 				System.out.println("User entered " + userEntry);
 			}
