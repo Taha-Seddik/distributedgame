@@ -9,4 +9,6 @@ public interface Hello extends Remote {
 
 	// Initial the Treasure
 	// void initTreasure() throws RemoteException, IOException;
+	
+	
 }
