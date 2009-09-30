@@ -1,17 +1,20 @@
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
+import java.rmi.*;
 import java.rmi.registry.Registry;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.io.*;
 
 public class Client implements HelloClient{
 
-	private Client() {
+	Client() {
+		System.out.println("ddd");
         try {
-            UnicastRemoteObject.exportObject(this);
+            UnicastRemoteObject.exportObject(this,0);
         }
         catch(RemoteException re) {
-            re.printStackTrace();
+        	System.out.println("adfafsf");
+            //re.printStackTrace();
         }
 	}
 
@@ -20,6 +23,8 @@ public class Client implements HelloClient{
 		try {
 			Registry registry = LocateRegistry.getRegistry(host);
 			Hello stub = (Hello) registry.lookup("Hello");
+			
+			stub.registerForNotification(new Client());
 			
 			
 			stub.testServer();
