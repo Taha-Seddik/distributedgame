@@ -13,11 +13,10 @@ public class Client {
 			Registry registry = LocateRegistry.getRegistry(host);
 			Hello stub = (Hello) registry.lookup("Hello");
 
-			/*
-			 * String response = stub.sayHello();
-			 * System.out.println("response: " + response); int test =
-			 * stub.throwInt(); System.out.println(test);
-			 */
+			
+		   /*String response = stub.sayHello();
+			 System.out.println("response: " + response); int test =
+			 stub.throwInt(); System.out.println(test);
 
 			char userEntry; // User's entry
 			System.out.println("Enter characters. Enter a Q to quit");
@@ -27,7 +26,7 @@ public class Client {
 					//System.out.println(stub.up());
 				}
 				System.out.println("User entered " + userEntry);
-			}
+			}*/
 
 		} catch (Exception e) {
 			System.err.println("Client exception: " + e.toString());
