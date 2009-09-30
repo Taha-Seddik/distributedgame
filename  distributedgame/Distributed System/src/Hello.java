@@ -10,5 +10,9 @@ public interface Hello extends Remote {
 	// Initial the Treasure
 	// void initTreasure() throws RemoteException, IOException;
 	
+	// test Server
+	void testServer() throws RemoteException;
 	
+	// called by clients to register for server callbacks
+    void registerForNotification(HelloClient n) throws RemoteException;
 }
