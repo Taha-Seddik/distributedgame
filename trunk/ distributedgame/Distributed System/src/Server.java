@@ -9,29 +9,16 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-import com.sun.org.apache.bcel.internal.generic.InstructionConstants.Clinit;
 
 public class Server implements Hello {
-	
-    // To hold the registered clients
-    private static Vector clientList = null;
 
-	
-	public Server() throws RemoteException{
+	// To hold the registered clients
+	private static Vector clientList = null;
+
+	public Server() throws RemoteException {
 		super();
 		clientList = new Vector();
 	}
-	
-    // This is where the 'event' of receiving a bid from one of the clients
-    // is handled. The server calls the remote notify method on all the clients.
-    public void setCurrentBid(String b) throws RemoteException {
-        for(Enumeration clients = clientList.elements();
-            clients.hasMoreElements();) {
-                HelloClient thingToNotify = (HelloClient) clients.nextElement();
-                thingToNotify.notify(new Integer(0));
-            }
-    }
-
 
 	public static void main(String args[]) {
 		Hello stub = null;
@@ -53,8 +40,6 @@ public class Server implements Hello {
 				}
 				System.out.println();
 			}
-			
-
 
 		} catch (Exception e) {
 			try {
@@ -100,11 +85,12 @@ public class Server implements Hello {
 			map[X][Y]++;
 		}
 	}
-	
-	public static int getInt(){
+
+	public static int getInt() {
 		int result = 0;
 		try {
-			BufferedReader is = new BufferedReader(new InputStreamReader(System.in));
+			BufferedReader is = new BufferedReader(new InputStreamReader(
+					System.in));
 			result = Integer.parseInt(is.readLine());
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -114,16 +100,19 @@ public class Server implements Hello {
 
 	@Override
 	public void registerForNotification(HelloClient n) throws RemoteException {
-		clientList.addElement(n);		
+		clientList.addElement(n);
+		System.out.println("Fuck again!");
 	}
 
 	@Override
 	public void testServer() throws RemoteException {
-        for(Enumeration clients = clientList.elements();
-        clients.hasMoreElements();) {
-            HelloClient thingToNotify = (HelloClient) clients.nextElement();
-            System.out.println(thingToNotify.testClient());
-        }
+		System.out.println("Whah");
+		for (Enumeration clients = clientList.elements(); clients
+				.hasMoreElements();) {
+			HelloClient thingToNotify = (HelloClient) clients.nextElement();
+			System.out.println(thingToNotify.testClient());
+		}
+
 	}
 
 }
