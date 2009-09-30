@@ -2,7 +2,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.io.*;
 
-public class Client {
+public class Client implements HelloClient{
 
 	private Client() {
 	}
