@@ -1,17 +1,37 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Enumeration;
 import java.util.Random;
+import java.util.Vector;
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
+import com.sun.org.apache.bcel.internal.generic.InstructionConstants.Clinit;
+
 public class Server implements Hello {
 	
-	private Server() {
-		
+    // To hold the registered clients
+    private static Vector clientList = null;
+
+	
+	public Server() throws RemoteException{
+		super();
+		clientList = new Vector();
 	}
+	
+    // This is where the 'event' of receiving a bid from one of the clients
+    // is handled. The server calls the remote notify method on all the clients.
+    public void setCurrentBid(String b) throws RemoteException {
+        for(Enumeration clients = clientList.elements();
+            clients.hasMoreElements();) {
+                HelloClient thingToNotify = (HelloClient) clients.nextElement();
+                thingToNotify.notify(new Integer(0));
+            }
+    }
+
 
 	public static void main(String args[]) {
 		Hello stub = null;
@@ -33,6 +53,8 @@ public class Server implements Hello {
 				}
 				System.out.println();
 			}
+			
+
 
 		} catch (Exception e) {
 			try {
@@ -88,6 +110,20 @@ public class Server implements Hello {
 			e.printStackTrace();
 		}
 		return result;
+	}
+
+	@Override
+	public void registerForNotification(HelloClient n) throws RemoteException {
+		clientList.addElement(n);		
+	}
+
+	@Override
+	public void testServer() throws RemoteException {
+        for(Enumeration clients = clientList.elements();
+        clients.hasMoreElements();) {
+            HelloClient thingToNotify = (HelloClient) clients.nextElement();
+            System.out.println(thingToNotify.testClient());
+        }
 	}
 
 }
