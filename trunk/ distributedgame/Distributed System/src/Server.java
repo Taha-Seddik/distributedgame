@@ -8,6 +8,10 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 public class Server implements Hello {
+	
+	private Server() {
+		
+	}
 
 	public static void main(String args[]) {
 		Hello stub = null;
