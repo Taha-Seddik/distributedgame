@@ -3,6 +3,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Enumeration;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.Vector;
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
@@ -11,15 +13,35 @@ import java.rmi.server.UnicastRemoteObject;
 
 public class Server implements Hello {
 
-	private static int numOfClient;
+	// Number of Clients
+	private static int NumOfClient;
 
 	// To hold the registered clients
-	private static Vector clientList = null;
+	private static Vector ClientList = null;
+
+	// for the first regitry
+	private static Boolean FirstRegistry;
+
+	// for the registry time
+	private static Boolean RegistryTime;
+
+	// The Global Map
+	public static int[][] map;
+
+	// The Size of the Map
+	public static int N;
+
+	// The No. of Treasures
+	public static int M;
 
 	public Server() throws RemoteException {
 		super();
-		numOfClient = 0;
-		clientList = new Vector();
+		NumOfClient = 0;
+		ClientList = new Vector();
+		FirstRegistry = false;
+		RegistryTime = false;
+		initMap();
+		initTreasure();
 	}
 
 	public static void main(String args[]) {
@@ -33,8 +55,6 @@ public class Server implements Hello {
 			registry.bind("Hello", stub);
 			System.err.println("Server ready");
 
-			initMap();
-			initTreasure();
 			showMap();
 		} catch (Exception e) {
 			try {
@@ -47,15 +67,6 @@ public class Server implements Hello {
 			}
 		}
 	}
-
-	// The Global Map
-	public static int[][] map;
-
-	// The Size of the Map
-	public static int N;
-
-	// The No. of Treasures
-	public static int M;
 
 	public static void initMap() {
 		System.out.println("Please input N -- size of the map:");
@@ -103,32 +114,77 @@ public class Server implements Hello {
 		}
 	}
 
+	public static Timer timer;
+
+	public void registryTime(int seconds) {
+		timer = new Timer();
+		System.out.println("registry time begin");
+		RegistryTime = true;
+		timer.schedule(new RemindTask(), seconds * 1000);
+	}
+
+	class RemindTask extends TimerTask {
+		public void run() {
+			RegistryTime = false;
+			System.out.println("registry time over");
+		}
+	}
+
 	@Override
 	public void registerForNotification(HelloClient n) throws RemoteException {
-		numOfClient++;
-		Random r = new Random();
-		int X = r.nextInt(N - 1);
-		int Y = r.nextInt(N - 1);
-		while (map[X][Y] != 0) {
-			X = r.nextInt(N - 1);
-			Y = r.nextInt(N - 1);
+
+		if (FirstRegistry == false) {
+			FirstRegistry = true;
+			registryTime(30);
 		}
-		n.setX(X);
-		n.setY(Y);
-		n.setID(numOfClient);
-		clientList.addElement(n);
-		System.out.println("Fuck again!");
-		map[X][Y] = numOfClient;
-		showMap();
+
+		if (FirstRegistry == true && RegistryTime == true) {
+			NumOfClient++;
+			Random r = new Random();
+			int X = r.nextInt(N - 1);
+			int Y = r.nextInt(N - 1);
+			while (map[X][Y] != 0) {
+				X = r.nextInt(N - 1);
+				Y = r.nextInt(N - 1);
+			}
+			n.setX(X);
+			n.setY(Y);
+			n.setID(NumOfClient);
+			ClientList.addElement(n);
+			n.showMessage("Registry OK!");
+			map[X][Y] = NumOfClient;
+			n.setMapSize(N);
+			updateAllClientMap();
+			showMap();
+		}
+
+		if (FirstRegistry == true && RegistryTime == false) {
+			n.showMessage("Registry time is over!");
+		}
 	}
 
 	@Override
 	public void testServer() throws RemoteException {
-		for (Enumeration clients = clientList.elements(); clients
+		for (Enumeration clients = ClientList.elements(); clients
 				.hasMoreElements();) {
 			HelloClient thingToNotify = (HelloClient) clients.nextElement();
 			System.out.println(thingToNotify.testClient());
 		}
+	}
+
+	@Override
+	public void updateAllClientMap() throws RemoteException {
+		for (Enumeration clients = ClientList.elements(); clients
+				.hasMoreElements();) {
+			HelloClient thingToNotify = (HelloClient) clients.nextElement();
+			thingToNotify.setClientMap(map);
+			thingToNotify.showMap();
+		}
+	}
+
+	@Override
+	public void goUp(HelloClient n) throws RemoteException {
+		// TODO Auto-generated method stub
 
 	}
 

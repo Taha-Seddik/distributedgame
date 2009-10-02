@@ -12,12 +12,14 @@ public class Client implements HelloClient {
 	int ID;
 	
 	int[][] ClientMap;
+	
+	int MapSize;
 
 	Client() {
 		X = 0;
 		Y = 0;
 		ID = 0;
-		ClientMap = null;
+		MapSize = 0;
 		try {
 			UnicastRemoteObject.exportObject(this, 0);
 		} catch (RemoteException re) {
@@ -111,7 +113,29 @@ public class Client implements HelloClient {
 
 	@Override
 	public void setClientMap(int[][] tempClientMap) throws RemoteException {
+
 		ClientMap = tempClientMap.clone();
+	}
+
+	@Override
+	public void showMessage(String msg) throws RemoteException {
+		System.out.println(msg);
+	}
+
+	@Override
+	public void setMapSize(int tempMapSize) throws RemoteException {
+		MapSize = tempMapSize;
+	}
+
+	@Override
+	public void showMap() throws RemoteException {
+		for (int i = 0; i < MapSize; i++) {
+			for (int j = 0; j < MapSize; j++) {
+				System.out.print(ClientMap[i][j]);
+				System.out.print("   ");
+			}
+			System.out.println();
+		}
 	}
 
 }
