@@ -11,11 +11,14 @@ import java.rmi.server.UnicastRemoteObject;
 
 public class Server implements Hello {
 
+	private static int numOfClient;
+
 	// To hold the registered clients
 	private static Vector clientList = null;
 
 	public Server() throws RemoteException {
 		super();
+		numOfClient = 0;
 		clientList = new Vector();
 	}
 
@@ -74,7 +77,7 @@ public class Server implements Hello {
 			Random r = new Random();
 			int X = r.nextInt(N - 1);
 			int Y = r.nextInt(N - 1);
-			map[X][Y]++;
+			map[X][Y]--;
 		}
 	}
 
@@ -102,8 +105,21 @@ public class Server implements Hello {
 
 	@Override
 	public void registerForNotification(HelloClient n) throws RemoteException {
+		numOfClient++;
+		Random r = new Random();
+		int X = r.nextInt(N - 1);
+		int Y = r.nextInt(N - 1);
+		while (map[X][Y] != 0) {
+			X = r.nextInt(N - 1);
+			Y = r.nextInt(N - 1);
+		}
+		n.setX(X);
+		n.setY(Y);
+		n.setID(numOfClient);
 		clientList.addElement(n);
 		System.out.println("Fuck again!");
+		map[X][Y] = numOfClient;
+		showMap();
 	}
 
 	@Override
