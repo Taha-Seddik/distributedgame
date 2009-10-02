@@ -34,6 +34,9 @@ public class Server implements Hello {
 	// The No. of Treasures
 	public static int M;
 
+	// The No. of last Treasures
+	public static int LastTreasures;
+
 	public Server() throws RemoteException {
 		super();
 		NumOfClient = 0;
@@ -42,6 +45,7 @@ public class Server implements Hello {
 		RegistryTime = false;
 		initMap();
 		initTreasure();
+		LastTreasures = M;
 	}
 
 	public static void main(String args[]) {
@@ -86,8 +90,8 @@ public class Server implements Hello {
 		// We need to get M random positions
 		for (int i = 0; i < M; i++) {
 			Random r = new Random();
-			int X = r.nextInt(N - 1);
-			int Y = r.nextInt(N - 1);
+			int X = r.nextInt(N);
+			int Y = r.nextInt(N);
 			map[X][Y]--;
 		}
 	}
@@ -127,6 +131,38 @@ public class Server implements Hello {
 		public void run() {
 			RegistryTime = false;
 			System.out.println("registry time over");
+			try {
+				updateAllClientMap();
+				for (Enumeration clients = ClientList.elements(); clients
+						.hasMoreElements();) {
+					HelloClient thingToNotify = (HelloClient) clients
+							.nextElement();
+					thingToNotify.setGamebegin(true);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	static public void judge() throws RemoteException {
+		int MaxTreasure = 0;
+		for (Enumeration clients = ClientList.elements(); clients
+				.hasMoreElements();) {
+			HelloClient thingToNotify = (HelloClient) clients.nextElement();
+			thingToNotify.setGamebegin(false);
+			if (thingToNotify.getTreasureNumber() > MaxTreasure)
+				MaxTreasure = thingToNotify.getTreasureNumber();
+		}
+
+		for (Enumeration clients = ClientList.elements(); clients
+				.hasMoreElements();) {
+			HelloClient thingToNotify = (HelloClient) clients.nextElement();
+			if (thingToNotify.getTreasureNumber() < MaxTreasure) {
+				thingToNotify.showMessage("You LOSER!");
+			} else{
+				thingToNotify.showMessage("Hello Lucky Gay!");
+			}
 		}
 	}
 
@@ -135,17 +171,17 @@ public class Server implements Hello {
 
 		if (FirstRegistry == false) {
 			FirstRegistry = true;
-			registryTime(30);
+			registryTime(10);
 		}
 
 		if (FirstRegistry == true && RegistryTime == true) {
 			NumOfClient++;
 			Random r = new Random();
-			int X = r.nextInt(N - 1);
-			int Y = r.nextInt(N - 1);
+			int X = r.nextInt(N);
+			int Y = r.nextInt(N);
 			while (map[X][Y] != 0) {
-				X = r.nextInt(N - 1);
-				Y = r.nextInt(N - 1);
+				X = r.nextInt(N);
+				Y = r.nextInt(N);
 			}
 			n.setX(X);
 			n.setY(Y);
@@ -154,7 +190,7 @@ public class Server implements Hello {
 			n.showMessage("Registry OK!");
 			map[X][Y] = NumOfClient;
 			n.setMapSize(N);
-			updateAllClientMap();
+			// updateAllClientMap();
 			showMap();
 		}
 
@@ -184,8 +220,108 @@ public class Server implements Hello {
 
 	@Override
 	public void goUp(HelloClient n) throws RemoteException {
-		// TODO Auto-generated method stub
+		// TODO ½áÊøÌõ¼þ
+		System.out.println("UP");
+		int tempX = n.getX();
+		int tempY = n.getY();
+		int tempTreasureNumber = n.getTreasureNumber();
+		int tempID = n.getID();
+		if (tempX == 0) {
+		} else if (map[tempX - 1][tempY] <= 0) {
+			LastTreasures = LastTreasures - Math.abs(map[tempX - 1][tempY]);
+			n.setX(tempX - 1);
+			n.setY(tempY);
+			n.setTreasureNumber(tempTreasureNumber
+					+ Math.abs(map[tempX - 1][tempY]));
+			map[tempX - 1][tempY] = tempID;
+			map[tempX][tempY] = 0;
+			updateAllClientMap();
+			showMap();
+		}
 
+		if (LastTreasures == 0)
+			judge();
+
+	}
+
+	@Override
+	public void goDown(HelloClient n) throws RemoteException {
+		// TODO Auto-generated method stub
+		System.out.println("Down");
+
+		int tempX = n.getX();
+		int tempY = n.getY();
+		int tempTreasureNumber = n.getTreasureNumber();
+		int tempID = n.getID();
+		if (tempX == N - 1) {
+		} else if (map[tempX + 1][tempY] <= 0) {
+			LastTreasures = LastTreasures - Math.abs(map[tempX + 1][tempY]);
+			n.setX(tempX + 1);
+			n.setY(tempY);
+			n.setTreasureNumber(tempTreasureNumber
+					+ Math.abs(map[tempX + 1][tempY]));
+			map[tempX + 1][tempY] = tempID;
+			map[tempX][tempY] = 0;
+			updateAllClientMap();
+			showMap();
+		}
+
+		if (LastTreasures == 0)
+			judge();
+
+	}
+
+	@Override
+	public void goLeft(HelloClient n) throws RemoteException {
+		// TODO Auto-generated method stub
+		System.out.println("Left");
+
+		int tempX = n.getX();
+		int tempY = n.getY();
+		int tempTreasureNumber = n.getTreasureNumber();
+		int tempID = n.getID();
+		if (tempY == 0) {
+		} else if (map[tempX][tempY - 1] <= 0) {
+			LastTreasures = LastTreasures - Math.abs(map[tempX][tempY - 1]);
+			n.setX(tempX);
+			n.setY(tempY - 1);
+			n.setTreasureNumber(tempTreasureNumber
+					+ Math.abs(map[tempX][tempY - 1]));
+			map[tempX][tempY - 1] = tempID;
+			map[tempX][tempY] = 0;
+			updateAllClientMap();
+			showMap();
+		}
+
+		if (LastTreasures == 0)
+			judge();
+
+	}
+
+	@Override
+	public void goRight(HelloClient n) throws RemoteException {
+		// TODO Auto-generated method stub
+		System.out.println("Right");
+
+		int tempX = n.getX();
+		int tempY = n.getY();
+		int tempTreasureNumber = n.getTreasureNumber();
+		int tempID = n.getID();
+		if (tempY == N - 1) {
+		} else if (map[tempX][tempY + 1] <= 0) {
+			n.setX(tempX);
+			n.setY(tempY + 1);
+			LastTreasures = LastTreasures - Math.abs(map[tempX][tempY + 1]);
+			n.setTreasureNumber(tempTreasureNumber
+					+ Math.abs(map[tempX][tempY + 1]));
+			map[tempX][tempY + 1] = tempID;
+			map[tempX][tempY] = 0;
+			updateAllClientMap();
+			showMap();
+		}
+
+		if (LastTreasures == 0)
+			judge();
 	}
 
 }

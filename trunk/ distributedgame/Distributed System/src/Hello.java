@@ -14,4 +14,13 @@ public interface Hello extends Remote {
 
 	// Go Up
 	void goUp(HelloClient n) throws RemoteException;
+	
+	// Go Down
+	void goDown(HelloClient n) throws RemoteException;
+	
+	// Go Left
+	void goLeft(HelloClient n) throws RemoteException;
+	
+	// Go Right
+	void goRight(HelloClient n) throws RemoteException;
 }
