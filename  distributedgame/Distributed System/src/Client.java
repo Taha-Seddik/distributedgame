@@ -7,19 +7,25 @@ import java.io.*;
 
 public class Client implements HelloClient {
 
-	int X, Y;
+	static int X, Y;
 
-	int ID;
-	
-	int[][] ClientMap;
-	
-	int MapSize;
+	static int ID;
+
+	static int[][] ClientMap;
+
+	static int MapSize;
+
+	static int TreasureNumber;
+
+	static Boolean Gamebegin;
 
 	Client() {
 		X = 0;
 		Y = 0;
 		ID = 0;
 		MapSize = 0;
+		TreasureNumber = 0;
+		Gamebegin = false;
 		try {
 			UnicastRemoteObject.exportObject(this, 0);
 		} catch (RemoteException re) {
@@ -32,30 +38,46 @@ public class Client implements HelloClient {
 		try {
 			Registry registry = LocateRegistry.getRegistry(host);
 			Hello stub = (Hello) registry.lookup("Hello");
+			Client client = new Client();
+			stub.registerForNotification(client);
+			
+			while(Gamebegin != true) {
+				
+			}
 
-			stub.registerForNotification(new Client());
+			// stub.testServer();
 
-			stub.testServer();
-
-			/*
-			 * String response = stub.sayHello();
-			 * System.out.println("response: " + response); int test =
-			 * stub.throwInt(); System.out.println(test);
-			 * 
-			 * char userEntry; // User's entry
-			 * System.out.println("Enter characters. Enter a Q to quit");
-			 * 
-			 * while ((userEntry = getChar()) != 'Q') { if (userEntry == 'w') {
-			 * //System.out.println(stub.up()); }
-			 * System.out.println("User entered " + userEntry); }
-			 */
+			
+			 
+			 char userEntry; // User's entry
+			 System.out.println("Enter characters. Enter a Q to quit");
+			 
+			 while ((userEntry = getChar()) != 'Q')  { 
+				 if (userEntry == 'w') {
+					 stub.goUp(client);
+					 System.out.println("UP");
+				 } 
+				 if (userEntry == 's') {
+					 stub.goDown(client);
+					 System.out.println("Down");
+				 } 
+				 if (userEntry == 'a') {
+					 stub.goLeft(client);
+					 System.out.println("Left");
+				 } 
+				 if (userEntry == 'd') {
+					 stub.goRight(client);
+					 System.out.println("Right");
+				 } 
+			 }
+			 
 
 		} catch (Exception e) {
 			System.err.println("Client exception: " + e.toString());
 			e.printStackTrace();
 		}
 	}
-	
+
 
 	// method getChar(): retrieve a single char from System.in
 	static public char getChar() throws IOException {
@@ -136,6 +158,22 @@ public class Client implements HelloClient {
 			}
 			System.out.println();
 		}
+	}
+
+	@Override
+	public int getTreasureNumber() throws RemoteException {
+		return TreasureNumber;
+	}
+
+	@Override
+	public void setTreasureNumber(int tempTreasureNumber)
+			throws RemoteException {
+		TreasureNumber = tempTreasureNumber;
+	}
+
+	@Override
+	public void setGamebegin(Boolean tempGamebegin) throws RemoteException {
+		Gamebegin = tempGamebegin;
 	}
 
 }

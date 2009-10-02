@@ -38,4 +38,14 @@ public interface HelloClient extends Remote {
 	// show map
 	void showMap() throws RemoteException;
 	
+	// set TreasureNumber
+	void setTreasureNumber(int tempTreasureNumber) throws RemoteException;
+	
+	// get TreasureNumber
+	int getTreasureNumber() throws RemoteException;
+	
+	// set Gamebegin
+	void setGamebegin(Boolean tempGamebegin) throws RemoteException;
+	
+	
 }
