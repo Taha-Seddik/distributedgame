@@ -5,17 +5,24 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.io.*;
 
-public class Client implements HelloClient{
+public class Client implements HelloClient {
+
+	int X, Y;
+
+	int ID;
+	
+	int[][] ClientMap;
 
 	Client() {
-		System.out.println("ddd");
-        try {
-            UnicastRemoteObject.exportObject(this,0);
-        }
-        catch(RemoteException re) {
-        	System.out.println("adfafsf");
-            //re.printStackTrace();
-        }
+		X = 0;
+		Y = 0;
+		ID = 0;
+		ClientMap = null;
+		try {
+			UnicastRemoteObject.exportObject(this, 0);
+		} catch (RemoteException re) {
+			re.printStackTrace();
+		}
 	}
 
 	public static void main(String[] args) throws IOException {
@@ -23,31 +30,30 @@ public class Client implements HelloClient{
 		try {
 			Registry registry = LocateRegistry.getRegistry(host);
 			Hello stub = (Hello) registry.lookup("Hello");
-			
+
 			stub.registerForNotification(new Client());
-			
-			
+
 			stub.testServer();
-			
-		   /*String response = stub.sayHello();
-			 System.out.println("response: " + response); int test =
-			 stub.throwInt(); System.out.println(test);
 
-			char userEntry; // User's entry
-			System.out.println("Enter characters. Enter a Q to quit");
-
-			while ((userEntry = getChar()) != 'Q') {
-				if (userEntry == 'w') {
-					//System.out.println(stub.up());
-				}
-				System.out.println("User entered " + userEntry);
-			}*/
+			/*
+			 * String response = stub.sayHello();
+			 * System.out.println("response: " + response); int test =
+			 * stub.throwInt(); System.out.println(test);
+			 * 
+			 * char userEntry; // User's entry
+			 * System.out.println("Enter characters. Enter a Q to quit");
+			 * 
+			 * while ((userEntry = getChar()) != 'Q') { if (userEntry == 'w') {
+			 * //System.out.println(stub.up()); }
+			 * System.out.println("User entered " + userEntry); }
+			 */
 
 		} catch (Exception e) {
 			System.err.println("Client exception: " + e.toString());
 			e.printStackTrace();
 		}
 	}
+	
 
 	// method getChar(): retrieve a single char from System.in
 	static public char getChar() throws IOException {
@@ -63,14 +69,49 @@ public class Client implements HelloClient{
 	}
 
 	@Override
-	public void notify(Integer reason) throws RemoteException {
-		// TODO Auto-generated method stub
-		
+	public String testClient() throws RemoteException {
+		System.out.println("Call back OK!");
+		return "Callback OK!";
 	}
 
 	@Override
-	public String testClient() throws RemoteException {
-		return "Callback OK!";
+	public int getX() throws RemoteException {
+		return X;
+	}
+
+	@Override
+	public int getY() throws RemoteException {
+		return Y;
+	}
+
+	@Override
+	public void setX(int tempX) throws RemoteException {
+		X = tempX;
+	}
+
+	@Override
+	public void setY(int tempY) throws RemoteException {
+		Y = tempY;
+	}
+
+	@Override
+	public int getID() throws RemoteException {
+		return ID;
+	}
+
+	@Override
+	public void setID(int tempID) throws RemoteException {
+		ID = tempID;
+	}
+
+	@Override
+	public int[][] getClientMap() throws RemoteException {
+		return ClientMap;
+	}
+
+	@Override
+	public void setClientMap(int[][] tempClientMap) throws RemoteException {
+		ClientMap = tempClientMap.clone();
 	}
 
 }
