@@ -28,4 +28,14 @@ public interface HelloClient extends Remote {
 
 	// set ClientMap
 	void setClientMap(int[][] tempClientMap) throws RemoteException;
+	
+	// set Map size
+	void setMapSize(int tempMapSize) throws RemoteException;
+	
+	// show Message from Server
+	void showMessage(String msg) throws RemoteException;
+	
+	// show map
+	void showMap() throws RemoteException;
+	
 }
