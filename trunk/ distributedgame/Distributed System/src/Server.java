@@ -9,7 +9,6 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-
 public class Server implements Hello {
 
 	// To hold the registered clients
@@ -33,14 +32,7 @@ public class Server implements Hello {
 
 			initMap();
 			initTreasure();
-			for (int i = 0; i < N; i++) {
-				for (int j = 0; j < N; j++) {
-					System.out.print(map[i][j]);
-					System.out.print("   ");
-				}
-				System.out.println();
-			}
-
+			showMap();
 		} catch (Exception e) {
 			try {
 				registry.unbind("Hello");
@@ -98,6 +90,16 @@ public class Server implements Hello {
 		return result;
 	}
 
+	public static void showMap() {
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				System.out.print(map[i][j]);
+				System.out.print("   ");
+			}
+			System.out.println();
+		}
+	}
+
 	@Override
 	public void registerForNotification(HelloClient n) throws RemoteException {
 		clientList.addElement(n);
@@ -106,7 +108,6 @@ public class Server implements Hello {
 
 	@Override
 	public void testServer() throws RemoteException {
-		System.out.println("Whah");
 		for (Enumeration clients = clientList.elements(); clients
 				.hasMoreElements();) {
 			HelloClient thingToNotify = (HelloClient) clients.nextElement();
