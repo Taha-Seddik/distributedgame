@@ -11,6 +11,8 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
+import sun.org.mozilla.javascript.internal.Synchronizer;
+
 public class Server implements Hello {
 
 	// Number of Clients
@@ -132,7 +134,7 @@ public class Server implements Hello {
 			RegistryTime = false;
 			System.out.println("registry time over");
 			int Counter = 0;
-			while (Counter != ClientList.size()) {
+			while (Counter < ClientList.size()) {
 				try {
 					updateAllClientMap();
 					for (Enumeration clients = ClientList.elements(); clients
@@ -153,7 +155,7 @@ public class Server implements Hello {
 	static public void judge() {
 		int MaxTreasure = 0;
 		int Counter = 0;
-		while (Counter != ClientList.size()) {
+		while (Counter < ClientList.size()) {
 			try {
 				for (Enumeration clients = ClientList.elements(); clients
 						.hasMoreElements();) {
@@ -227,10 +229,11 @@ public class Server implements Hello {
 	@Override
 	public void updateAllClientMap() {
 		int Counter = 0;
-		while (Counter != ClientList.size()) {
+		while (Counter < ClientList.size()) {
 			try {
 				for (Enumeration clients = ClientList.elements(); clients
 						.hasMoreElements();) {
+					System.out.println("Counter in FOr"+Counter);
 					HelloClient thingToNotify = (HelloClient) clients
 							.nextElement();
 					thingToNotify.setClientMap(map);
@@ -253,15 +256,17 @@ public class Server implements Hello {
 		int tempID = n.getID();
 		if (tempX == 0) {
 		} else if (map[tempX - 1][tempY] <= 0) {
-			LastTreasures = LastTreasures - Math.abs(map[tempX - 1][tempY]);
-			n.setX(tempX - 1);
-			n.setY(tempY);
-			n.setTreasureNumber(tempTreasureNumber
-					+ Math.abs(map[tempX - 1][tempY]));
-			map[tempX - 1][tempY] = tempID;
-			map[tempX][tempY] = 0;
-			updateAllClientMap();
-			showMap();
+			
+				LastTreasures = LastTreasures - Math.abs(map[tempX - 1][tempY]);
+				n.setX(tempX - 1);
+				n.setY(tempY);
+				n.setTreasureNumber(tempTreasureNumber
+						+ Math.abs(map[tempX - 1][tempY]));
+				map[tempX - 1][tempY] = tempID;
+				map[tempX][tempY] = 0;
+				updateAllClientMap();
+				showMap();
+			
 		}
 
 		if (LastTreasures == 0)
@@ -280,15 +285,18 @@ public class Server implements Hello {
 		int tempID = n.getID();
 		if (tempX == N - 1) {
 		} else if (map[tempX + 1][tempY] <= 0) {
-			LastTreasures = LastTreasures - Math.abs(map[tempX + 1][tempY]);
-			n.setX(tempX + 1);
-			n.setY(tempY);
-			n.setTreasureNumber(tempTreasureNumber
-					+ Math.abs(map[tempX + 1][tempY]));
-			map[tempX + 1][tempY] = tempID;
-			map[tempX][tempY] = 0;
-			updateAllClientMap();
-			showMap();
+			
+
+				LastTreasures = LastTreasures - Math.abs(map[tempX + 1][tempY]);
+				n.setX(tempX + 1);
+				n.setY(tempY);
+				n.setTreasureNumber(tempTreasureNumber
+						+ Math.abs(map[tempX + 1][tempY]));
+				map[tempX + 1][tempY] = tempID;
+				map[tempX][tempY] = 0;
+				updateAllClientMap();
+				showMap();
+			
 		}
 
 		if (LastTreasures == 0)
@@ -307,15 +315,18 @@ public class Server implements Hello {
 		int tempID = n.getID();
 		if (tempY == 0) {
 		} else if (map[tempX][tempY - 1] <= 0) {
-			LastTreasures = LastTreasures - Math.abs(map[tempX][tempY - 1]);
-			n.setX(tempX);
-			n.setY(tempY - 1);
-			n.setTreasureNumber(tempTreasureNumber
-					+ Math.abs(map[tempX][tempY - 1]));
-			map[tempX][tempY - 1] = tempID;
-			map[tempX][tempY] = 0;
-			updateAllClientMap();
-			showMap();
+			
+
+				LastTreasures = LastTreasures - Math.abs(map[tempX][tempY - 1]);
+				n.setX(tempX);
+				n.setY(tempY - 1);
+				n.setTreasureNumber(tempTreasureNumber
+						+ Math.abs(map[tempX][tempY - 1]));
+				map[tempX][tempY - 1] = tempID;
+				map[tempX][tempY] = 0;
+				updateAllClientMap();
+				showMap();
+			
 		}
 
 		if (LastTreasures == 0)
@@ -334,15 +345,17 @@ public class Server implements Hello {
 		int tempID = n.getID();
 		if (tempY == N - 1) {
 		} else if (map[tempX][tempY + 1] <= 0) {
-			n.setX(tempX);
-			n.setY(tempY + 1);
-			LastTreasures = LastTreasures - Math.abs(map[tempX][tempY + 1]);
-			n.setTreasureNumber(tempTreasureNumber
-					+ Math.abs(map[tempX][tempY + 1]));
-			map[tempX][tempY + 1] = tempID;
-			map[tempX][tempY] = 0;
-			updateAllClientMap();
-			showMap();
+			
+				n.setX(tempX);
+				n.setY(tempY + 1);
+				LastTreasures = LastTreasures - Math.abs(map[tempX][tempY + 1]);
+				n.setTreasureNumber(tempTreasureNumber
+						+ Math.abs(map[tempX][tempY + 1]));
+				map[tempX][tempY + 1] = tempID;
+				map[tempX][tempY] = 0;
+				updateAllClientMap();
+				showMap();
+			
 		}
 
 		if (LastTreasures == 0)
