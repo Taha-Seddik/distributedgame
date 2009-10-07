@@ -131,37 +131,53 @@ public class Server implements Hello {
 		public void run() {
 			RegistryTime = false;
 			System.out.println("registry time over");
-			try {
-				updateAllClientMap();
-				for (Enumeration clients = ClientList.elements(); clients
-						.hasMoreElements();) {
-					HelloClient thingToNotify = (HelloClient) clients
-							.nextElement();
-					thingToNotify.setGamebegin(true);
+			int Counter = 0;
+			while (Counter != ClientList.size()) {
+				try {
+					updateAllClientMap();
+					for (Enumeration clients = ClientList.elements(); clients
+							.hasMoreElements();) {
+						HelloClient thingToNotify = (HelloClient) clients
+								.nextElement();
+						thingToNotify.setGamebegin(true);
+						Counter++;
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					ClientList.remove(Counter);
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
 		}
 	}
 
-	static public void judge() throws RemoteException {
+	static public void judge() {
 		int MaxTreasure = 0;
-		for (Enumeration clients = ClientList.elements(); clients
-				.hasMoreElements();) {
-			HelloClient thingToNotify = (HelloClient) clients.nextElement();
-			thingToNotify.setGamebegin(false);
-			if (thingToNotify.getTreasureNumber() > MaxTreasure)
-				MaxTreasure = thingToNotify.getTreasureNumber();
-		}
+		int Counter = 0;
+		while (Counter != ClientList.size()) {
+			try {
+				for (Enumeration clients = ClientList.elements(); clients
+						.hasMoreElements();) {
+					HelloClient thingToNotify = (HelloClient) clients
+							.nextElement();
+					thingToNotify.setGamebegin(false);
+					if (thingToNotify.getTreasureNumber() > MaxTreasure)
+						MaxTreasure = thingToNotify.getTreasureNumber();
+				}
 
-		for (Enumeration clients = ClientList.elements(); clients
-				.hasMoreElements();) {
-			HelloClient thingToNotify = (HelloClient) clients.nextElement();
-			if (thingToNotify.getTreasureNumber() < MaxTreasure) {
-				thingToNotify.showMessage("You LOSER!");
-			} else{
-				thingToNotify.showMessage("Hello Lucky Gay!");
+				for (Enumeration clients = ClientList.elements(); clients
+						.hasMoreElements();) {
+					HelloClient thingToNotify = (HelloClient) clients
+							.nextElement();
+					if (thingToNotify.getTreasureNumber() < MaxTreasure) {
+						thingToNotify.showMessage("You LOSER!");
+					} else {
+						thingToNotify.showMessage("Hello Lucky Gay!");
+					}
+				}
+				Counter++;
+			} catch (Exception e) {
+				e.printStackTrace();
+				ClientList.remove(Counter);
 			}
 		}
 	}
@@ -171,7 +187,7 @@ public class Server implements Hello {
 
 		if (FirstRegistry == false) {
 			FirstRegistry = true;
-			registryTime(10);
+			registryTime(20);
 		}
 
 		if (FirstRegistry == true && RegistryTime == true) {
@@ -209,12 +225,21 @@ public class Server implements Hello {
 	}
 
 	@Override
-	public void updateAllClientMap() throws RemoteException {
-		for (Enumeration clients = ClientList.elements(); clients
-				.hasMoreElements();) {
-			HelloClient thingToNotify = (HelloClient) clients.nextElement();
-			thingToNotify.setClientMap(map);
-			thingToNotify.showMap();
+	public void updateAllClientMap() {
+		int Counter = 0;
+		while (Counter != ClientList.size()) {
+			try {
+				for (Enumeration clients = ClientList.elements(); clients
+						.hasMoreElements();) {
+					HelloClient thingToNotify = (HelloClient) clients
+							.nextElement();
+					thingToNotify.setClientMap(map);
+					thingToNotify.showMap();
+					Counter++;
+				}
+			} catch (Exception e) {
+				ClientList.remove(Counter);
+			}
 		}
 	}
 
