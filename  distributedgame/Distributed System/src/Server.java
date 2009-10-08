@@ -11,8 +11,6 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-import sun.org.mozilla.javascript.internal.Synchronizer;
-
 public class Server implements Hello {
 
 	// Number of Clients
@@ -137,10 +135,8 @@ public class Server implements Hello {
 			while (Counter < ClientList.size()) {
 				try {
 					updateAllClientMap();
-					for (Enumeration clients = ClientList.elements(); clients
-							.hasMoreElements();) {
-						HelloClient thingToNotify = (HelloClient) clients
-								.nextElement();
+					for (int i = 0; i < ClientList.size(); i++) {
+						HelloClient thingToNotify = (HelloClient)ClientList.get(i);
 						thingToNotify.setGamebegin(true);
 						Counter++;
 					}
@@ -157,19 +153,14 @@ public class Server implements Hello {
 		int Counter = 0;
 		while (Counter < ClientList.size()) {
 			try {
-				for (Enumeration clients = ClientList.elements(); clients
-						.hasMoreElements();) {
-					HelloClient thingToNotify = (HelloClient) clients
-							.nextElement();
-					thingToNotify.setGamebegin(false);
+				for (int i = 0; i < ClientList.size(); i++) {
+					HelloClient thingToNotify = (HelloClient)ClientList.get(i);
 					if (thingToNotify.getTreasureNumber() > MaxTreasure)
 						MaxTreasure = thingToNotify.getTreasureNumber();
 				}
 
-				for (Enumeration clients = ClientList.elements(); clients
-						.hasMoreElements();) {
-					HelloClient thingToNotify = (HelloClient) clients
-							.nextElement();
+				for (int i = 0; i < ClientList.size(); i++) {
+					HelloClient thingToNotify = (HelloClient)ClientList.get(i);
 					if (thingToNotify.getTreasureNumber() < MaxTreasure) {
 						thingToNotify.showMessage("You LOSER!");
 					} else {
@@ -219,9 +210,8 @@ public class Server implements Hello {
 
 	@Override
 	public void testServer() throws RemoteException {
-		for (Enumeration clients = ClientList.elements(); clients
-				.hasMoreElements();) {
-			HelloClient thingToNotify = (HelloClient) clients.nextElement();
+		for (int i = 0; i < ClientList.size(); i++) {
+			HelloClient thingToNotify = (HelloClient)ClientList.get(i);
 			System.out.println(thingToNotify.testClient());
 		}
 	}
@@ -231,11 +221,8 @@ public class Server implements Hello {
 		int Counter = 0;
 		while (Counter < ClientList.size()) {
 			try {
-				for (Enumeration clients = ClientList.elements(); clients
-						.hasMoreElements();) {
-					System.out.println("Counter in FOr"+Counter);
-					HelloClient thingToNotify = (HelloClient) clients
-							.nextElement();
+				for (int i = 0; i < ClientList.size(); i++) {
+					HelloClient thingToNotify = (HelloClient)ClientList.get(i);
 					thingToNotify.setClientMap(map);
 					thingToNotify.showMap();
 					Counter++;
