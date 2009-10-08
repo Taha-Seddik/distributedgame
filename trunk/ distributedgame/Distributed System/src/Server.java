@@ -6,6 +6,7 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
+import java.util.concurrent.CountDownLatch;
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
@@ -135,7 +136,7 @@ public class Server implements Hello {
 			while (Counter < ClientList.size()) {
 				try {
 					updateAllClientMap();
-					for (int i = 0; i < ClientList.size(); i++) {
+					for (int i = Counter; i < ClientList.size(); i++) {
 						HelloClient thingToNotify = (HelloClient)ClientList.get(i);
 						thingToNotify.setGamebegin(true);
 						Counter++;
@@ -153,21 +154,30 @@ public class Server implements Hello {
 		int Counter = 0;
 		while (Counter < ClientList.size()) {
 			try {
-				for (int i = 0; i < ClientList.size(); i++) {
+				for (int i = Counter; i < ClientList.size(); i++) {
 					HelloClient thingToNotify = (HelloClient)ClientList.get(i);
 					if (thingToNotify.getTreasureNumber() > MaxTreasure)
 						MaxTreasure = thingToNotify.getTreasureNumber();
-				}
-
-				for (int i = 0; i < ClientList.size(); i++) {
+					Counter++;
+				}				
+			} catch (Exception e) {
+				e.printStackTrace();
+				ClientList.remove(Counter);
+			}
+		}
+		
+		Counter = 0;
+		while (Counter < ClientList.size()) {
+			try {
+				for (int i = Counter; i < ClientList.size(); i++) {
 					HelloClient thingToNotify = (HelloClient)ClientList.get(i);
 					if (thingToNotify.getTreasureNumber() < MaxTreasure) {
 						thingToNotify.showMessage("You LOSER!");
 					} else {
 						thingToNotify.showMessage("Hello Lucky Gay!");
 					}
+					Counter++;
 				}
-				Counter++;
 			} catch (Exception e) {
 				e.printStackTrace();
 				ClientList.remove(Counter);
@@ -209,19 +219,11 @@ public class Server implements Hello {
 	}
 
 	@Override
-	public void testServer() throws RemoteException {
-		for (int i = 0; i < ClientList.size(); i++) {
-			HelloClient thingToNotify = (HelloClient)ClientList.get(i);
-			System.out.println(thingToNotify.testClient());
-		}
-	}
-
-	@Override
 	public void updateAllClientMap() {
 		int Counter = 0;
 		while (Counter < ClientList.size()) {
 			try {
-				for (int i = 0; i < ClientList.size(); i++) {
+				for (int i = Counter; i < ClientList.size(); i++) {
 					HelloClient thingToNotify = (HelloClient)ClientList.get(i);
 					thingToNotify.setClientMap(map);
 					thingToNotify.showMap();
@@ -347,6 +349,12 @@ public class Server implements Hello {
 
 		if (LastTreasures == 0)
 			judge();
+	}
+
+	@Override
+	public void testServer() throws RemoteException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
