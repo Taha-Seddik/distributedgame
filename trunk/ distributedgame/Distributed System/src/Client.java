@@ -40,44 +40,35 @@ public class Client implements HelloClient {
 			Hello stub = (Hello) registry.lookup("Hello");
 			Client client = new Client();
 			stub.registerForNotification(client);
-			
-			while(Gamebegin != true) {
-				
+
+			while (Gamebegin != true) {
+
 			}
 
 			// stub.testServer();
 
-			
-			 
-			 char userEntry; // User's entry
-			 System.out.println("Enter characters. Enter a Q to quit");
-			 
-			 while ((userEntry = getChar()) != 'Q')  { 
-				 if (userEntry == 'w') {
-					 stub.goUp(client);
-					 System.out.println("UP");
-				 } 
-				 if (userEntry == 's') {
-					 stub.goDown(client);
-					 System.out.println("Down");
-				 } 
-				 if (userEntry == 'a') {
-					 stub.goLeft(client);
-					 System.out.println("Left");
-				 } 
-				 if (userEntry == 'd') {
-					 stub.goRight(client);
-					 System.out.println("Right");
-				 } 
-			 }
-			 
+			char userEntry; // User's entry
+
+			while ((userEntry = getChar()) != 'Q') {
+				if (userEntry == 'w') {
+					stub.goUp(client);
+				}
+				if (userEntry == 's') {
+					stub.goDown(client);
+				}
+				if (userEntry == 'a') {
+					stub.goLeft(client);
+				}
+				if (userEntry == 'd') {
+					stub.goRight(client);
+				}
+			}
 
 		} catch (Exception e) {
 			System.err.println("Client exception: " + e.toString());
 			e.printStackTrace();
 		}
 	}
-
 
 	// method getChar(): retrieve a single char from System.in
 	static public char getChar() throws IOException {
@@ -158,6 +149,7 @@ public class Client implements HelloClient {
 			}
 			System.out.println();
 		}
+		System.out.println("Enter characters. Enter a Q to quit");
 	}
 
 	@Override
