@@ -1,0 +1,1 @@
+It is a small distributed game, using Java RMI to create a server and a client, and these client can join and play
